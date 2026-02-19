@@ -20,11 +20,20 @@ app.get("/", (req, res) => {
 app.get("/appointments", async (req, res) => {
   try {
     const result = await db.query(`
-      SELECT a.*, c.category_name
+      SELECT 
+        a.id,
+        a.title,
+        a.appointment_datetime,
+        a.timezone,
+        c.category_name,
+        json_agg(r.reminder_minutes) AS reminders
       FROM appointments a
       LEFT JOIN categories c ON a.category_id = c.id
-      ORDER BY appointment_datetime
+      LEFT JOIN reminders r ON a.id = r.appointment_id
+      GROUP BY a.id, c.category_name
+      ORDER BY a.appointment_datetime
     `);
+
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
