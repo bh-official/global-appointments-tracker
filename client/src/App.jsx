@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router";
-import Signup from "./components/Signup";
+import Signup from "./pages/Signup";
 
 import { useEffect } from "react";
 import { supabase } from "./lib/supabase";
