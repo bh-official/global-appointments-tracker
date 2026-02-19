@@ -14,7 +14,7 @@ const db = new pg.Pool({
 });
 
 app.get("/", (req, res) => {
-  res.status(200).json({ message: "You've reached the server" });
+  res.status(200).json("You've reached the server");
 });
 
 app.get("/appointments", async (req, res) => {
