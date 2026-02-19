@@ -40,6 +40,11 @@ app.get("/appointments", async (req, res) => {
   }
 });
 
+// app.post("/appointments", (req, res) => {
+//   console.log("POST hit");
+//   res.json({ test: "Route working" });
+// });
+
 app.post("/appointments", async (req, res) => {
   try {
     const {
@@ -52,7 +57,7 @@ app.post("/appointments", async (req, res) => {
     } = req.body;
 
     const newAppointment = await db.query(
-      `INSERT INTO appointments 
+      `INSERT INTO appointments
        (title, appointment_datetime, timezone, category_id, user_id)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
