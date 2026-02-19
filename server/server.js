@@ -155,6 +155,45 @@ app.get("/appointments/:id", async (req, res) => {
 //   }
 // });
 
+// app.get("/appointments/:id", async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     const result = await db.query(
+//       `
+//       SELECT
+//         a.id,
+//         a.title,
+//         a.appointment_datetime,
+//         a.timezone,
+//         c.category_name,
+//         array_agg(
+//           json_build_object(
+//             'id', r.id,
+//             'minutes', r.reminder_minutes
+//           )
+//         ) FILTER (WHERE r.id IS NOT NULL) AS reminders
+//       FROM appointments a
+//       LEFT JOIN categories c
+//         ON a.category_id = c.id
+//       LEFT JOIN reminders r
+//         ON a.id = r.appointment_id
+//       WHERE a.id = $1
+//       GROUP BY a.id, c.category_name
+//       `,
+//       [id],
+//     );
+
+//     if (result.rows.length === 0) {
+//       return res.status(404).json({ message: "Appointment not found" });
+//     }
+
+//     res.json(result.rows[0]);
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
+
 app.get("/appointments/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -162,15 +201,15 @@ app.get("/appointments/:id", async (req, res) => {
     const result = await db.query(
       `
       SELECT 
-        a.id,
-        a.title,
-        a.appointment_datetime,
-        a.timezone,
-        c.category_name,
+        a.id AS appointment_id,
+        a.title AS appointment_title,
+        a.appointment_datetime AS scheduled_at,
+        a.timezone AS meeting_timezone,
+        c.category_name AS category,
         array_agg(
           json_build_object(
-            'id', r.id,
-            'minutes', r.reminder_minutes
+            'reminder_id', r.id,
+            'remind_before_minutes', r.reminder_minutes
           )
         ) FILTER (WHERE r.id IS NOT NULL) AS reminders
       FROM appointments a
