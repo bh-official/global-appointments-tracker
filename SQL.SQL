@@ -127,4 +127,23 @@ select * from appointments;
 
 select title, appointment_datetime from appointments;
 
+SELECT id, title FROM appointments;
+
+
+
+INSERT INTO reminders (appointment_id, reminder_minutes)
+VALUES
+('4827a1bd-b64c-4dc0-b869-35ffda2ecaa6', 30),
+('cd3fbf25-97f7-4075-8482-eeebb5849132', 60),
+('bcf90d13-09d2-48fe-97f2-d0e52eb5be43', 15),
+('a5e8e3e4-f6c6-4e23-84c0-7560070d1224', 30),
+('413e5d90-e7e0-4eca-b977-70f07f78a972', 45),
+('f1069c25-92e6-4714-be70-39321e626c2e', 60),
+('ae84e8f5-181c-4a64-b8b0-3dbce50fb010', 20),
+('dd81c8a6-edbb-4a29-8190-ef743df9fc09', 45),
+('9557d985-f946-444b-87ff-f19fa2f5dbdb', 60),
+('0488146d-34aa-4000-bf7b-7cc8975f9730', 20);
+
+SELECT * FROM reminders;
+
 
