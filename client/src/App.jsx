@@ -1,12 +1,19 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Signup from "./pages/Signup";
+import { BrowserRouter, Routes, Route } from "react-router";
+import Signup from "./components/Signup";
+
+import { useEffect } from "react";
+import { supabase } from "./lib/supabase";
 
 export default function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/signup" element={<Signup />} />
-      </Routes>
-    </BrowserRouter>
-  );
+  useEffect(() => {
+    const checkConnection = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      console.log("Session:", data);
+      console.log("Error:", error);
+    };
+
+    checkConnection();
+  }, []);
+
+  return <div>Test</div>;
 }
