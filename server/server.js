@@ -17,31 +17,6 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "You've reached the server" });
 });
 
-// app.get("/appointments", async (req, res) => {
-//   try {
-//     const result = await db.query(`
-//       SELECT
-//         a.id,
-//         a.title,
-//         a.appointment_datetime,
-//         a.timezone,
-//         c.category_name,
-//         json_agg(r.reminder_minutes) AS reminders
-//       FROM appointments a
-//       LEFT JOIN categories c ON a.category_id = c.id
-//       LEFT JOIN reminders r ON a.id = r.appointment_id
-//       GROUP BY a.id, c.category_name
-//       ORDER BY a.appointment_datetime
-//     `);
-
-//     res.json(result.rows);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
-
-//
-
 app.get("/appointments", async (req, res) => {
   try {
     const { user_id, category, from, to } = req.query;
@@ -181,45 +156,6 @@ app.post("/appointments", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-// app.get("/appointments/:id", async (req, res) => {
-//   try {
-//     const { id } = req.params;
-
-//     const result = await db.query(
-//       `
-//       SELECT
-//         a.id,
-//         a.title,
-//         a.appointment_datetime,
-//         a.timezone,
-//         c.category_name,
-//         array_agg(
-//           json_build_object(
-//             'id', r.id,
-//             'minutes', r.reminder_minutes
-//           )
-//         ) FILTER (WHERE r.id IS NOT NULL) AS reminders
-//       FROM appointments a
-//       LEFT JOIN categories c
-//         ON a.category_id = c.id
-//       LEFT JOIN reminders r
-//         ON a.id = r.appointment_id
-//       WHERE a.id = $1
-//       GROUP BY a.id, c.category_name
-//       `,
-//       [id],
-//     );
-
-//     if (result.rows.length === 0) {
-//       return res.status(404).json({ message: "Appointment not found" });
-//     }
-
-//     res.json(result.rows[0]);
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// });
 
 app.delete("/appointments/:id", async (req, res) => {
   try {
