@@ -82,6 +82,18 @@ app.post("/appointments", async (req, res) => {
   }
 });
 
+app.delete("/appointments/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    await db.query("DELETE FROM appointments WHERE id=$1", [id]);
+
+    res.json({ message: "Appointment deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
