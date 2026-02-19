@@ -1,5 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 import Signup from "./pages/Signup";
+// import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
 
 import { useEffect } from "react";
 import { supabase } from "./lib/supabase";
@@ -15,5 +17,13 @@ export default function App() {
     checkConnection();
   }, []);
 
-  return <div>Test</div>;
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* <Route path="/" element={<Dashboard />} /> */}
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
