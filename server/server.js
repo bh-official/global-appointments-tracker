@@ -40,10 +40,20 @@ app.get("/appointments", async (req, res) => {
   }
 });
 
-// app.post("/appointments", (req, res) => {
-//   console.log("POST hit");
-//   res.json({ test: "Route working" });
-// });
+// get appointment using single Id
+app.get("/appointments/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const result = await db.query("SELECT * FROM appointments WHERE id=$1", [
+      id,
+    ]);
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 app.post("/appointments", async (req, res) => {
   try {
