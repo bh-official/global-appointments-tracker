@@ -80,7 +80,7 @@ app.get("/appointments", async (req, res) => {
   }
 });
 
-// get appointment using single Id
+// get appointment using single ID, useful for editing an appointment
 app.get("/appointments/:id", async (req, res) => {
   try {
     const { id } = req.params;
