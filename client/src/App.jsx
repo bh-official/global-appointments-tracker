@@ -27,6 +27,8 @@ export default function App() {
               path="/category/:categoryName"
               element={<CategoryAppointments />}
             />
+            <Route path="/create" element={<CreateAppointment />} />
+
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
           </Routes>
