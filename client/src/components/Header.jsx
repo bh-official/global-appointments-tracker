@@ -4,14 +4,17 @@ export default function Header() {
   const location = useLocation();
 
   const isActive = (path) =>
-    location.pathname === path ? "font-bold underline" : "hover:underline";
+    location.pathname === path
+      ? "font-bold text-white border-b-2 border-white"
+      : "text-blue-100 hover:text-white";
+
   return (
-    <header className="bg-blue-600 text-white shadow-md">
-      <div className="max-w-6xl mx-auto flex justify-between items-center p-4">
+    <header className="fixed top-0 left-0 w-full bg-brown-600 text-white shadow-md z-50">
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
         <h1 className="text-xl font-bold">Global Appointments Tracker</h1>
 
         <nav className="space-x-6">
-          <Link to="/" className="hover:underline">
+          <Link to="/" className={isActive("/")}>
             Home
           </Link>
 
