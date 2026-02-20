@@ -1,6 +1,10 @@
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 
 export default function Header() {
+  const location = useLocation();
+
+  const isActive = (path) =>
+    location.pathname === path ? "font-bold underline" : "hover:underline";
   return (
     <header className="bg-blue-600 text-white shadow-md">
       <div className="max-w-6xl mx-auto flex justify-between items-center p-4">
