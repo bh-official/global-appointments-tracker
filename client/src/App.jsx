@@ -4,6 +4,8 @@ import Home from "./pages/Home";
 import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
+import Appointments from "./pages/Appointments";
+import AppointmentDetails from "./pages/AppointmentDetails";
 
 import { useEffect } from "react";
 import { supabase } from "./lib/supabase";
@@ -17,10 +19,8 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route
-              path="/appointments"
-              element={<div>Appointments Page</div>}
-            />
+            <Route path="/appointments" element={<Appointments />} />
+            <Route path="/appointments/:id" element={<AppointmentDetails />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
           </Routes>

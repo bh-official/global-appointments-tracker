@@ -6,7 +6,7 @@ export default function Header() {
   const isActive = (path) =>
     location.pathname === path
       ? "font-bold text-white border-b-2 border-white"
-      : "text-blue-100 hover:text-white";
+      : "text-green-100 hover:text-white";
 
   return (
     <header className="fixed top-0 left-0 w-full bg-brown-600 text-white shadow-md z-50">
