@@ -6,28 +6,33 @@ export default function Dashboard() {
   const [error, setError] = useState(null);
 
   const API_URL = import.meta.env.VITE_API_URL;
-  console.log("API_URL:", API_URL);
+
+  const fetchAppointments = async () => {
+    try {
+      const response = await fetch(`${API_URL}/appointments`);
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch appointments");
+      }
+
+      const data = await response.json();
+      setAppointments(data);
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong while fetching data.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const response = await fetch(`${API_URL}/appointments`);
+    fetchAppointments(); // initial load
 
-        if (!response.ok) {
-          throw new Error("Failed to fetch appointments");
-        }
+    const interval = setInterval(() => {
+      fetchAppointments(); // poll every 30 seconds
+    }, 30000);
 
-        const data = await response.json();
-        setAppointments(data);
-      } catch (err) {
-        console.error(err);
-        setError("Something went wrong while fetching data.");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAppointments();
+    return () => clearInterval(interval); // cleanup
   }, [API_URL]);
 
   if (loading) {
