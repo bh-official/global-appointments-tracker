@@ -6,10 +6,10 @@ export default function Header() {
   const isActive = (path) =>
     location.pathname === path
       ? "font-bold text-white border-b-2 border-white"
-      : "text-green-100 hover:text-white";
+      : "text-white hover:text-gray-200";
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-brown-600 text-white shadow-md z-50">
+    <header className="fixed top-0 left-0 w-full bg-amber-700 text-white shadow-md z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
         <h1 className="text-xl font-bold">Global Appointments Tracker</h1>
 
@@ -18,23 +18,23 @@ export default function Header() {
             Home
           </Link>
 
-          <Link to="/dashboard" className="hover:underline">
+          <Link to="/dashboard" className={isActive("/dashboard")}>
             Dashboard
           </Link>
 
-          <Link to="/appointments" className="hover:underline">
+          <Link to="/appointments" className={isActive("/appointments")}>
             Appointments
           </Link>
 
-          <Link to="/appointments/:id" className="hover:underline">
-            AppointmentDetails
+          <Link to="/create" className={isActive("/create")}>
+            Create
           </Link>
 
-          <Link to="/login" className="hover:underline">
+          <Link to="/login" className={isActive("/login")}>
             Login
           </Link>
 
-          <Link to="/signup" className="hover:underline">
+          <Link to="/signup" className={isActive("/signup")}>
             Signup
           </Link>
         </nav>
