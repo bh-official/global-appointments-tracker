@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import CategoryList from "../components/CategoryList";
 
 export default function Home() {
   return (
@@ -15,6 +16,9 @@ export default function Home() {
         <Link to="/signup" className="bg-gray-200 px-4 py-2 rounded">
           Signup
         </Link>
+      </div>
+      <div className="mt-10">
+        <CategoryList />
       </div>
     </div>
   );

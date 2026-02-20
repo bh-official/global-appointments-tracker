@@ -26,6 +26,10 @@ export default function Header() {
             Appointments
           </Link>
 
+          <Link to="/appointments/:id" className="hover:underline">
+            AppointmentDetails
+          </Link>
+
           <Link to="/login" className="hover:underline">
             Login
           </Link>
