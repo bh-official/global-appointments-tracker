@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Appointments from "./pages/Appointments";
 import AppointmentDetails from "./pages/AppointmentDetails";
 import CategoryAppointments from "./pages/CategoryAppointments";
+import CreateAppointment from "./pages/CreateAppointment";
 
 import { useEffect } from "react";
 import { supabase } from "./lib/supabase";
