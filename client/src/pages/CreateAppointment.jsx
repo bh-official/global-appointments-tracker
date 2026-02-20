@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { supabase } from "../lib/supabase";
 
 export default function CreateAppointment() {
   const navigate = useNavigate();
@@ -27,18 +28,25 @@ export default function CreateAppointment() {
       ? formData.reminders.split(",").map((r) => Number(r.trim()))
       : [];
 
+    const { data: sessionData } = await supabase.auth.getSession();
+    const userId = sessionData.session.user.id;
+
     const response = await fetch(`${API_URL}/appointments`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        ...formData,
+        title: formData.title,
+        appointment_datetime: formData.appointment_datetime,
+        timezone: formData.timezone,
+        category_id: Number(formData.category_id),
+        user_id: userId,
         reminders: reminderArray,
-        user_id: null, // temporarily null unless you want to pass logged in user
       }),
     });
-
+    const data = await response.json();
+    console.log("Server response:", data);
     if (response.ok) {
       navigate("/appointments");
     } else {
