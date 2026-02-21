@@ -132,11 +132,11 @@ export default function CreateAppointment() {
           required
         >
           <option value="">Select Timezone</option>
-          <option value="Europe/London">Europe/London</option>
-          <option value="Asia/Kolkata">Asia/Kolkata</option>
-          <option value="America/New_York">America/New_York</option>
-          <option value="America/Toronto">America/Toronto</option>
-          <option value="Australia/Sydney">Australia/Sydney</option>
+          {Intl.supportedValuesOf("timeZone").map((tz) => (
+            <option key={tz} value={tz}>
+              {tz}
+            </option>
+          ))}
         </select>
 
         {/* Category Dropdown */}

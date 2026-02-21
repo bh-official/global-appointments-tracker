@@ -6,6 +6,7 @@ export default function AppointmentDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [appointment, setAppointment] = useState(null);
+  const [countdown, setCountdown] = useState("");
   const API_URL = import.meta.env.VITE_API_URL;
 
   useEffect(() => {
@@ -39,6 +40,31 @@ export default function AppointmentDetails() {
     fetchAppointment();
   }, [id, API_URL, navigate]);
 
+  useEffect(() => {
+    if (!appointment) return;
+
+    const interval = setInterval(() => {
+      const now = new Date();
+      const target = new Date(appointment.scheduled_at);
+      const diff = target - now;
+
+      if (diff <= 0) {
+        setCountdown("Started / Passed");
+        clearInterval(interval);
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      setCountdown(`${days}d ${hours}h ${minutes}m ${seconds}s`);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [appointment]);
+
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this appointment?",
@@ -66,6 +92,34 @@ export default function AppointmentDetails() {
   if (!appointment) {
     return <div className="p-6">Loading...</div>;
   }
+  // Format date cleanly like: 3 Mar 2026, 5:37 PM
+  const formatDate = (dateString, timezone) => {
+    return new Date(dateString).toLocaleString("en-GB", {
+      timeZone: timezone,
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  };
+
+  // Get time difference text
+  const getTimeDifference = (dateString) => {
+    const now = new Date();
+    const appointmentDate = new Date(dateString);
+    const diffMs = appointmentDate - now;
+
+    if (diffMs <= 0) return "This appointment has passed.";
+
+    const diffMinutes = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+
+    if (diffDays > 0) return `${diffDays} day(s) remaining`;
+    if (diffHours > 0) return `${diffHours} hour(s) remaining`;
+    return `${diffMinutes} minute(s) remaining`;
+  };
 
   return (
     <div className="p-6">
@@ -73,7 +127,7 @@ export default function AppointmentDetails() {
         {appointment.appointment_title}
       </h1>
 
-      <p className="mt-2">
+      {/* <p className="mt-2">
         Scheduled Time ({appointment.meeting_timezone}):{" "}
         {new Date(appointment.scheduled_at).toLocaleString("en-GB", {
           timeZone: appointment.meeting_timezone,
@@ -82,7 +136,27 @@ export default function AppointmentDetails() {
 
       <p className="mt-1">
         Your Local Time: {new Date(appointment.scheduled_at).toLocaleString()}
-      </p>
+      </p> */}
+      <div className="mt-4 space-y-2">
+        <p>
+          <strong>Scheduled Time ({appointment.meeting_timezone}):</strong>{" "}
+          {formatDate(appointment.scheduled_at, appointment.meeting_timezone)}
+        </p>
+
+        <p>
+          <strong>Your Local Time:</strong>{" "}
+          {formatDate(
+            appointment.scheduled_at,
+            Intl.DateTimeFormat().resolvedOptions().timeZone,
+          )}
+        </p>
+
+        <p className="text-green-600 font-medium">
+          {getTimeDifference(appointment.scheduled_at)}
+        </p>
+
+        <p className="text-blue-600 font-semibold">Countdown: {countdown}</p>
+      </div>
 
       {appointment.reminders &&
         Array.isArray(appointment.reminders) &&
