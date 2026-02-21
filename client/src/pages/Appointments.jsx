@@ -97,35 +97,37 @@ export default function Appointments() {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-      <h1 className="text-3xl font-bold mb-6">My Appointments</h1>
+      <h1 className="text-3xl font-bold mb-6">Browse by Category</h1>
 
       {/* =========================
           CATEGORY FILTER
       ========================= */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        <button
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        <div
           onClick={() => setSelectedCategory("")}
-          className={`px-3 py-1 rounded ${
+          className={`border-2 rounded-xl p-6 cursor-pointer text-xl font-semibold transition
+          ${
             selectedCategory === ""
               ? "bg-blue-600 text-white"
-              : "bg-white border"
+              : "border-blue-500 text-blue-600 hover:bg-blue-50"
           }`}
         >
           All
-        </button>
+        </div>
 
         {categories.map((category) => (
-          <button
+          <div
             key={category.id}
             onClick={() => setSelectedCategory(category.category_name)}
-            className={`px-3 py-1 rounded ${
+            className={`border-2 rounded-xl p-6 cursor-pointer text-xl font-semibold transition
+            ${
               selectedCategory === category.category_name
                 ? "bg-blue-600 text-white"
-                : "bg-white border"
+                : "border-blue-500 text-blue-600 hover:bg-blue-50"
             }`}
           >
             {category.category_name}
-          </button>
+          </div>
         ))}
       </div>
 
@@ -143,7 +145,7 @@ export default function Appointments() {
           <button
             key={range.value}
             onClick={() => setSelectedRange(range.value)}
-            className={`px-3 py-1 rounded ${
+            className={`px-3 py-1 rounded transition ${
               selectedRange === range.value
                 ? "bg-green-600 text-white"
                 : "bg-white border"
