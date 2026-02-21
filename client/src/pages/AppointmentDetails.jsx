@@ -122,21 +122,11 @@ export default function AppointmentDetails() {
   };
 
   return (
-    <div className="p-6">
+    <div className="w-full p-6">
       <h1 className="text-2xl font-bold mb-4">
         {appointment.appointment_title}
       </h1>
 
-      {/* <p className="mt-2">
-        Scheduled Time ({appointment.meeting_timezone}):{" "}
-        {new Date(appointment.scheduled_at).toLocaleString("en-GB", {
-          timeZone: appointment.meeting_timezone,
-        })}
-      </p>
-
-      <p className="mt-1">
-        Your Local Time: {new Date(appointment.scheduled_at).toLocaleString()}
-      </p> */}
       <div className="mt-4 space-y-2">
         <p>
           <strong>Scheduled Time ({appointment.meeting_timezone}):</strong>{" "}
@@ -170,6 +160,13 @@ export default function AppointmentDetails() {
             ))}
           </div>
         )}
+      <button
+        onClick={() => navigate(`/appointments/${id}/edit`)}
+        className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded"
+      >
+        Edit Appointment
+      </button>
+
       {/* DELETE BUTTON */}
       <button
         onClick={handleDelete}

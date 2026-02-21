@@ -114,7 +114,7 @@ export default function CreateAppointment() {
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
+    <div className="w-full p-6">
       <h1 className="text-2xl font-bold mb-6">Create Appointment</h1>
 
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -181,7 +181,7 @@ export default function CreateAppointment() {
           <button
             type="button"
             onClick={handleAddCategory}
-            className="bg-gray-600 text-white px-4 rounded"
+            className="bg-teal-500 text-white px-4 rounded"
           >
             Add
           </button>

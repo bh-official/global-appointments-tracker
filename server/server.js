@@ -233,6 +233,33 @@ app.post("/categories", authenticateUser, async (req, res) => {
   }
 });
 
+// Update
+app.put("/appointments/:id", authenticateUser, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, appointment_datetime, timezone, category_id } = req.body;
+
+    const result = await db.query(
+      `UPDATE appointments
+       SET title = $1,
+           appointment_datetime = $2,
+           timezone = $3,
+           category_id = $4
+       WHERE id = $5 AND user_id = $6
+       RETURNING *`,
+      [title, appointment_datetime, timezone, category_id, id, req.user.id],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Delete appointment by ID, also deletes associated reminders due to ON DELETE CASCADE
 app.delete("/appointments/:id", authenticateUser, async (req, res) => {
   try {

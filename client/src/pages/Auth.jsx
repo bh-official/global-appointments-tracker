@@ -48,7 +48,7 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center px-6">
+    <div className="w-full p-6 bg-teal-500 flex items-center justify-center px-6">
       <div className="bg-white p-10 rounded-xl shadow w-full max-w-md">
         <h2 className="text-2xl font-semibold mb-6 text-center">
           {mode === "login" ? "Login" : "Create Account"}

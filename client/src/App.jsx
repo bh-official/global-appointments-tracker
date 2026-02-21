@@ -12,9 +12,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen w-full bg-teal-500">
         <Header />
-        <main className="flex-1 pt-20">
+        <main className="flex-1 w-full px-6 flex justify-center">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/auth" element={<Auth />} />
@@ -41,6 +41,14 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <CreateAppointment />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/appointments/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <EditAppointment />
                 </ProtectedRoute>
               }
             />
