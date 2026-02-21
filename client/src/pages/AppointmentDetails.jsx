@@ -73,9 +73,16 @@ export default function AppointmentDetails() {
         {appointment.appointment_title}
       </h1>
 
-      <p>Date: {new Date(appointment.scheduled_at).toLocaleString()}</p>
+      <p className="mt-2">
+        Scheduled Time ({appointment.meeting_timezone}):{" "}
+        {new Date(appointment.scheduled_at).toLocaleString("en-GB", {
+          timeZone: appointment.meeting_timezone,
+        })}
+      </p>
 
-      <p>Timezone: {appointment.meeting_timezone}</p>
+      <p className="mt-1">
+        Your Local Time: {new Date(appointment.scheduled_at).toLocaleString()}
+      </p>
 
       {appointment.reminders &&
         Array.isArray(appointment.reminders) &&
