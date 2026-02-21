@@ -2,6 +2,19 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { supabase } from "../lib/supabase";
 
+const timeZones = Intl.supportedValuesOf("timeZone");
+
+const getOffsetLabel = (tz) => {
+  const now = new Date();
+  const formatter = new Intl.DateTimeFormat("en-US", {
+    timeZone: tz,
+    timeZoneName: "shortOffset",
+  });
+  const parts = formatter.formatToParts(now);
+  const offset = parts.find((p) => p.type === "timeZoneName")?.value;
+  return `${offset} — ${tz.replace("_", " ")}`;
+};
+
 export default function CreateAppointment() {
   const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
@@ -132,9 +145,9 @@ export default function CreateAppointment() {
           required
         >
           <option value="">Select Timezone</option>
-          {Intl.supportedValuesOf("timeZone").map((tz) => (
+          {timeZones.map((tz) => (
             <option key={tz} value={tz}>
-              {tz}
+              {getOffsetLabel(tz)}
             </option>
           ))}
         </select>

@@ -29,13 +29,13 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-6 text-center">
       {/* HERO */}
-      <h1 className="text-4xl font-bold mb-6">Global Appointments Tracker</h1>
+      {/* <h1 className="text-4xl font-bold mb-6">Global Appointments Tracker</h1> */}
 
-      <p className="max-w-2xl text-gray-600 mb-10">
+      <h2 className="text-3xl max-w-4xl text-gray-600 mb-6">
         Manage your appointments across different time zones, organize them by
         category, set reminders, and keep everything structured in one secure
         place.
-      </p>
+      </h2>
 
       {/* before login*/}
       <div className="space-x-4 mb-12">
