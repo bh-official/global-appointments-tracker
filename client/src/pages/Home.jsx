@@ -42,17 +42,10 @@ export default function Home() {
         {!user ? (
           <>
             <Link
-              to="/login"
+              to="/auth"
               className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
             >
               Login
-            </Link>
-
-            <Link
-              to="/signup"
-              className="bg-gray-200 px-6 py-3 rounded-lg hover:bg-gray-300 transition"
-            >
-              Signup
             </Link>
           </>
         ) : (

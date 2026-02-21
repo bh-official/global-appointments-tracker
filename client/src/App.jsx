@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 import Header from "./components/Header";
 import Home from "./pages/Home";
-import Signup from "./pages/Signup";
-
-import Login from "./pages/Login";
+// import Signup from "./pages/Signup";
+import Auth from "./pages/Auth";
+// import Login from "./pages/Login";
 import Appointments from "./pages/Appointments";
 import AppointmentDetails from "./pages/AppointmentDetails";
 import CategoryAppointments from "./pages/CategoryAppointments";
@@ -21,8 +21,8 @@ export default function App() {
         <main className="flex-1 pt-20">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
+            <Route path="/auth" element={<Auth />} />
+
             <Route
               path="/appointments"
               element={
