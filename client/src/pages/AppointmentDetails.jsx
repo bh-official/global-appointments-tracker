@@ -3,6 +3,7 @@ import { useParams } from "react-router";
 
 export default function AppointmentDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [appointment, setAppointment] = useState(null);
   const API_URL = import.meta.env.VITE_API_URL;
 
