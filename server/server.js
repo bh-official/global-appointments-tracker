@@ -48,7 +48,7 @@ app.get("/", (req, res) => {
 // Get all appointments with optional filters for category, date range, and user
 app.get("/appointments", authenticateUser, async (req, res) => {
   try {
-    const { category, from, to } = req.query;
+    const { category, from, to, range } = req.query;
 
     let conditions = [];
     let values = [];
@@ -72,6 +72,24 @@ app.get("/appointments", authenticateUser, async (req, res) => {
     if (to) {
       conditions.push(`a.appointment_datetime <= $${index++}`);
       values.push(to);
+    }
+
+    if (range === "upcoming") {
+      conditions.push(`a.appointment_datetime >= NOW()`);
+    }
+
+    if (range === "past") {
+      conditions.push(`a.appointment_datetime < NOW()`);
+    }
+
+    if (range === "today") {
+      conditions.push(`DATE(a.appointment_datetime) = CURRENT_DATE`);
+    }
+
+    if (range === "week") {
+      conditions.push(
+        `a.appointment_datetime BETWEEN NOW() AND NOW() + INTERVAL '7 days'`,
+      );
     }
 
     const whereClause =
