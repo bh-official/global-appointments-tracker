@@ -37,7 +37,7 @@ export default function Home() {
         place.
       </p>
 
-      {/* CTA */}
+      {/* before login*/}
       <div className="space-x-4 mb-12">
         {!user ? (
           <>
