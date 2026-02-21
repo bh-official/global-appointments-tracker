@@ -8,6 +8,7 @@ import Appointments from "./pages/Appointments";
 import AppointmentDetails from "./pages/AppointmentDetails";
 import CategoryAppointments from "./pages/CategoryAppointments";
 import CreateAppointment from "./pages/CreateAppointment";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import { useEffect } from "react";
 import { supabase } from "./lib/supabase";
@@ -20,14 +21,28 @@ export default function App() {
         <main className="flex-1 pt-20">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/appointments" element={<Appointments />} />
             <Route path="/appointments/:id" element={<AppointmentDetails />} />
             <Route
               path="/category/:categoryName"
               element={<CategoryAppointments />}
             />
-            <Route path="/create" element={<CreateAppointment />} />
+            <Route
+              path="/create"
+              element={
+                <ProtectedRoute>
+                  <CreateAppointment />
+                </ProtectedRoute>
+              }
+            />
 
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
