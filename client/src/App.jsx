@@ -6,7 +6,6 @@ import Auth from "./pages/Auth";
 
 import Appointments from "./pages/Appointments";
 import AppointmentDetails from "./pages/AppointmentDetails";
-import CategoryAppointments from "./pages/CategoryAppointments";
 import CreateAppointment from "./pages/CreateAppointment";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -36,10 +35,7 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            {/* <Route
-              path="/category/:categoryName"
-              element={<CategoryAppointments />}
-            /> */}
+
             <Route
               path="/create"
               element={
