@@ -108,6 +108,17 @@ app.get("/appointments", authenticateUser, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// Get all categories for dropdowns and filtering
+app.get("/categories", authenticateUser, async (req, res) => {
+  try {
+    const result = await db.query(
+      "SELECT id, category_name FROM categories ORDER BY category_name",
+    );
+    res.json(result.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // get appointment using single ID, useful for editing an appointment
 app.get("/appointments/:id", authenticateUser, async (req, res) => {
@@ -186,6 +197,24 @@ app.post("/appointments", authenticateUser, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+// Create new category (admin functionality, can be extended to allow users to create their own categories)
+
+app.post("/categories", authenticateUser, async (req, res) => {
+  try {
+    const { category_name } = req.body;
+
+    const result = await db.query(
+      "INSERT INTO categories (category_name) VALUES ($1) RETURNING *",
+      [category_name],
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Delete appointment by ID, also deletes associated reminders due to ON DELETE CASCADE
 app.delete("/appointments/:id", authenticateUser, async (req, res) => {
   try {

@@ -26,10 +26,6 @@ export default function Header() {
             Home
           </Link>
 
-          <Link to="/dashboard" className={isActive("/dashboard")}>
-            Dashboard
-          </Link>
-
           <Link to="/appointments" className={isActive("/appointments")}>
             Appointments
           </Link>

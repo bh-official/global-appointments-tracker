@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router";
 import Header from "./components/Header";
 import Home from "./pages/Home";
 import Signup from "./pages/Signup";
-import Dashboard from "./pages/Dashboard";
+
 import Login from "./pages/Login";
 import Appointments from "./pages/Appointments";
 import AppointmentDetails from "./pages/AppointmentDetails";
@@ -21,14 +21,8 @@ export default function App() {
         <main className="flex-1 pt-20">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route
               path="/appointments"
               element={
@@ -57,9 +51,6 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
           </Routes>
         </main>
       </div>
