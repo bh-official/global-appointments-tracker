@@ -1,6 +1,6 @@
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
+import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
-import { useNavigate } from "react-router";
 
 export default function Header() {
   const location = useLocation();
@@ -29,41 +29,44 @@ export default function Header() {
 
   const isActive = (path) =>
     location.pathname === path
-      ? "font-bold text-green border-b-2 border-white"
-      : "text-green hover:text-gray-200";
+      ? "font-bold border-b-2 border-white"
+      : "hover:text-gray-200";
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate("/login");
+    navigate("/");
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-amber-700 text-green shadow-md z-50">
+    <header className="fixed top-0 left-0 w-full bg-amber-700 text-white shadow-md z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-        <h1 className="text-xl font-bold">Global Appointments Tracker</h1>
+        <h1 className="text-lg font-bold">Global Appointments Tracker</h1>
 
-        <nav className="space-x-6">
+        <nav className="space-x-6 flex items-center">
           <Link to="/" className={isActive("/")}>
             Home
           </Link>
 
-          <Link to="/appointments" className={isActive("/appointments")}>
-            Appointments
-          </Link>
+          {user && (
+            <>
+              <Link to="/appointments" className={isActive("/appointments")}>
+                Appointments
+              </Link>
 
-          <Link to="/create" className={isActive("/create")}>
-            Create
-          </Link>
+              <Link to="/create" className={isActive("/create")}>
+                Create
+              </Link>
 
-          <Link to="/login" className={isActive("/login")}>
-            Login
-          </Link>
+              <button
+                onClick={handleLogout}
+                className="bg-red-600 px-3 py-1 rounded hover:bg-red-700 transition"
+              >
+                Logout
+              </button>
+            </>
+          )}
 
-          <Link to="/signup" className={isActive("/signup")}>
-            Signup
-          </Link>
-
-          {!user ? (
+          {/* {!user ? (
             <>
               <Link to="/login" className={isActive("/login")}>
                 Login
@@ -80,7 +83,7 @@ export default function Header() {
             >
               Logout
             </button>
-          )}
+          )} */}
         </nav>
       </div>
     </header>
