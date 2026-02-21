@@ -29,8 +29,22 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            <Route path="/appointments" element={<Appointments />} />
-            <Route path="/appointments/:id" element={<AppointmentDetails />} />
+            <Route
+              path="/appointments"
+              element={
+                <ProtectedRoute>
+                  <Appointments />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/appointments/:id"
+              element={
+                <ProtectedRoute>
+                  <AppointmentDetails />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/category/:categoryName"
               element={<CategoryAppointments />}
