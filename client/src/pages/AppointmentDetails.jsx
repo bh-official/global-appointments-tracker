@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 
 export default function AppointmentDetails() {
   const { id } = useParams();
@@ -49,14 +49,18 @@ export default function AppointmentDetails() {
 
       <p>Timezone: {appointment.meeting_timezone}</p>
 
-      {appointment.reminders && appointment.reminders.length > 0 && (
-        <div className="mt-4">
-          <h3 className="font-semibold">Reminders:</h3>
-          {appointment.reminders.map((r) => (
-            <p key={r.reminder_id}>{r.remind_before_minutes} minutes before</p>
-          ))}
-        </div>
-      )}
+      {appointment.reminders &&
+        Array.isArray(appointment.reminders) &&
+        appointment.reminders.length > 0 && (
+          <div className="mt-4">
+            <h3 className="font-semibold">Reminders:</h3>
+            {appointment.reminders.map((r) => (
+              <p key={r.reminder_id}>
+                {r.remind_before_minutes} minutes before
+              </p>
+            ))}
+          </div>
+        )}
       {/* DELETE BUTTON */}
       <button
         onClick={handleDelete}
