@@ -1,17 +1,14 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 import Header from "./components/Header";
 import Home from "./pages/Home";
-// import Signup from "./pages/Signup";
+
 import Auth from "./pages/Auth";
-// import Login from "./pages/Login";
+
 import Appointments from "./pages/Appointments";
 import AppointmentDetails from "./pages/AppointmentDetails";
 import CategoryAppointments from "./pages/CategoryAppointments";
 import CreateAppointment from "./pages/CreateAppointment";
 import ProtectedRoute from "./components/ProtectedRoute";
-
-import { useEffect } from "react";
-import { supabase } from "./lib/supabase";
 
 export default function App() {
   return (
@@ -39,10 +36,10 @@ export default function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
+            {/* <Route
               path="/category/:categoryName"
               element={<CategoryAppointments />}
-            />
+            /> */}
             <Route
               path="/create"
               element={
