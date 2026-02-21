@@ -1,29 +1,3 @@
-// import { Link } from "react-router";
-// import CategoryList from "../components/CategoryList";
-
-// export default function Home() {
-//   return (
-//     <div className="p-6">
-//       <h2 className="text-2xl font-semibold">
-//         Welcome to Global Appointments Tracker
-//       </h2>
-
-//       <div className="mt-6 space-x-4">
-//         <Link to="/login" className="bg-blue-600 text-white px-4 py-2 rounded">
-//           Login
-//         </Link>
-
-//         <Link to="/signup" className="bg-gray-200 px-4 py-2 rounded">
-//           Signup
-//         </Link>
-//       </div>
-//       <div className="mt-10">
-//         <CategoryList />
-//       </div>
-//     </div>
-//   );
-// }
-
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
@@ -32,17 +6,29 @@ export default function Home() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    // Get initial session
     const getSession = async () => {
       const { data } = await supabase.auth.getSession();
       setUser(data.session?.user || null);
     };
 
     getSession();
+
+    // Listen for login/logout changes
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user || null);
+      },
+    );
+
+    return () => {
+      listener.subscription.unsubscribe();
+    };
   }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center px-6 text-center">
-      {/* HERO SECTION */}
+      {/* HERO */}
       <h1 className="text-4xl font-bold mb-6">Global Appointments Tracker</h1>
 
       <p className="max-w-2xl text-gray-600 mb-10">
@@ -51,7 +37,7 @@ export default function Home() {
         place.
       </p>
 
-      {/* CTA BUTTONS */}
+      {/* CTA */}
       <div className="space-x-4 mb-12">
         {!user ? (
           <>
@@ -79,7 +65,7 @@ export default function Home() {
         )}
       </div>
 
-      {/* FEATURES SECTION */}
+      {/* FEATURES */}
       <div className="grid md:grid-cols-3 gap-8 max-w-5xl">
         <div className="bg-white p-6 rounded-xl shadow">
           <h3 className="font-semibold text-lg mb-2">Timezone Aware</h3>
