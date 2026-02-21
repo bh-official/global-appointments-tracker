@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router";
+import { supabase } from "../lib/supabase";
 
 export default function AppointmentDetails() {
   const { id } = useParams();
@@ -9,13 +10,34 @@ export default function AppointmentDetails() {
 
   useEffect(() => {
     const fetchAppointment = async () => {
-      const response = await fetch(`${API_URL}/appointments/${id}`);
-      const data = await response.json();
-      setAppointment(data);
+      try {
+        const { data } = await supabase.auth.getSession();
+        const token = data.session?.access_token;
+
+        if (!token) {
+          navigate("/login");
+          return;
+        }
+
+        const response = await fetch(`${API_URL}/appointments/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch appointment");
+        }
+
+        const result = await response.json();
+        setAppointment(result);
+      } catch (err) {
+        console.error(err);
+      }
     };
 
     fetchAppointment();
-  }, [id, API_URL]);
+  }, [id, API_URL, navigate]);
 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
@@ -24,8 +46,14 @@ export default function AppointmentDetails() {
 
     if (!confirmDelete) return;
 
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+
     const response = await fetch(`${API_URL}/appointments/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (response.ok) {
