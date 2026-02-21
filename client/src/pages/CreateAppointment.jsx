@@ -86,7 +86,7 @@ export default function CreateAppointment() {
       },
       body: JSON.stringify({
         title: formData.title,
-        appointment_datetime: formData.appointment_datetime,
+        appointment_datetime: `${formData.appointment_datetime}:00 ${formData.timezone}`,
         timezone: formData.timezone,
         category_id: Number(formData.category_id),
         reminders: reminderArray,
@@ -124,15 +124,20 @@ export default function CreateAppointment() {
           required
         />
 
-        <input
-          type="text"
+        <select
           name="timezone"
-          placeholder="Timezone (e.g. Europe/London)"
           value={formData.timezone}
           onChange={handleChange}
           className="border p-2 w-full"
           required
-        />
+        >
+          <option value="">Select Timezone</option>
+          <option value="Europe/London">Europe/London</option>
+          <option value="Asia/Kolkata">Asia/Kolkata</option>
+          <option value="America/New_York">America/New_York</option>
+          <option value="America/Toronto">America/Toronto</option>
+          <option value="Australia/Sydney">Australia/Sydney</option>
+        </select>
 
         {/* Category Dropdown */}
         <select
