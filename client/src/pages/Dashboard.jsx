@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
 
 export default function Dashboard() {
   const [appointments, setAppointments] = useState([]);
@@ -9,7 +10,21 @@ export default function Dashboard() {
 
   const fetchAppointments = async () => {
     try {
-      const response = await fetch(`${API_URL}/appointments`);
+      const { data: sessionData } = await supabase.auth.getSession();
+
+      if (!sessionData.session) {
+        setError("Not authenticated.");
+        setLoading(false);
+        return;
+      }
+
+      const token = sessionData.session.access_token;
+
+      const response = await fetch(`${API_URL}/appointments`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (!response.ok) {
         throw new Error("Failed to fetch appointments");

@@ -2,9 +2,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import pg from "pg";
+import { createClient } from "@supabase/supabase-js";
 
 dotenv.config();
-
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -13,22 +13,51 @@ const db = new pg.Pool({
   connectionString: process.env.DB_CONN,
 });
 
+const supabaseAdmin = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY,
+);
+
+// Authentication middleware to protect routes
+const authenticateUser = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+      return res.status(401).json({ error: "No token provided" });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    const { data, error } = await supabaseAdmin.auth.getUser(token);
+
+    if (error || !data.user) {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
+    req.user = data.user;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+};
+// This route is just for testing if the server is up and running
 app.get("/", (req, res) => {
   res.status(200).json("You've reached the server");
 });
-
-app.get("/appointments", async (req, res) => {
+// Get all appointments with optional filters for category, date range, and user
+app.get("/appointments", authenticateUser, async (req, res) => {
   try {
-    const { user_id, category, from, to } = req.query;
+    const { category, from, to } = req.query;
 
     let conditions = [];
     let values = [];
     let index = 1;
 
-    if (user_id) {
-      conditions.push(`a.user_id = $${index++}`);
-      values.push(user_id);
-    }
+    const userId = req.user.id;
+
+    conditions.push(`a.user_id = $${index++}`);
+    values.push(userId);
 
     if (category) {
       conditions.push(`c.category_name = $${index++}`);
@@ -81,7 +110,7 @@ app.get("/appointments", async (req, res) => {
 });
 
 // get appointment using single ID, useful for editing an appointment
-app.get("/appointments/:id", async (req, res) => {
+app.get("/appointments/:id", authenticateUser, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -104,10 +133,11 @@ app.get("/appointments/:id", async (req, res) => {
         ON a.category_id = c.id
       LEFT JOIN reminders r 
         ON a.id = r.appointment_id
-      WHERE a.id = $1
+      WHERE a.id = $1 AND a.user_id = $2
+
       GROUP BY a.id, c.category_name
       `,
-      [id],
+      [id, req.user.id],
     );
 
     if (result.rows.length === 0) {
@@ -119,8 +149,8 @@ app.get("/appointments/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-app.post("/appointments", async (req, res) => {
+// Create new appointment with optional reminders
+app.post("/appointments", authenticateUser, async (req, res) => {
   try {
     const {
       title,
@@ -130,13 +160,13 @@ app.post("/appointments", async (req, res) => {
       user_id,
       reminders,
     } = req.body;
-
+    const userId = req.user.id;
     const newAppointment = await db.query(
       `INSERT INTO appointments
        (title, appointment_datetime, timezone, category_id, user_id)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
-      [title, appointment_datetime, timezone, category_id, user_id],
+      [title, appointment_datetime, timezone, category_id, userId],
     );
 
     const appointmentId = newAppointment.rows[0].id;
@@ -156,19 +186,22 @@ app.post("/appointments", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-app.delete("/appointments/:id", async (req, res) => {
+// Delete appointment by ID, also deletes associated reminders due to ON DELETE CASCADE
+app.delete("/appointments/:id", authenticateUser, async (req, res) => {
   try {
     const { id } = req.params;
 
-    await db.query("DELETE FROM appointments WHERE id=$1", [id]);
+    await db.query("DELETE FROM appointments WHERE id=$1 AND user_id=$2", [
+      id,
+      req.user.id,
+    ]);
 
     res.json({ message: "Appointment deleted" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
-
+// Additional routes for updating appointments, managing categories, etc. can be added here
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);

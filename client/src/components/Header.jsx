@@ -1,12 +1,20 @@
 import { Link, useLocation } from "react-router";
+import { supabase } from "../lib/supabase";
+import { useNavigate } from "react-router";
 
 export default function Header() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const isActive = (path) =>
     location.pathname === path
       ? "font-bold text-white border-b-2 border-white"
       : "text-white hover:text-gray-200";
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/login");
+  };
 
   return (
     <header className="fixed top-0 left-0 w-full bg-amber-700 text-white shadow-md z-50">
@@ -37,6 +45,13 @@ export default function Header() {
           <Link to="/signup" className={isActive("/signup")}>
             Signup
           </Link>
+
+          <button
+            onClick={handleLogout}
+            className="ml-4 bg-red-600 px-3 py-1 rounded"
+          >
+            Logout
+          </button>
         </nav>
       </div>
     </header>
