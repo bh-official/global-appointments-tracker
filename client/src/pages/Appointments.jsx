@@ -165,28 +165,73 @@ export default function Appointments() {
         </p>
       ) : (
         <div className="grid gap-4">
-          {appointments.map((appointment) => (
+          {/* {appointments.map((appointment) => (
             <Link
               key={appointment.appointment_id}
               to={`/appointments/${appointment.appointment_id}`}
               className="block bg-white p-5 rounded-xl shadow hover:shadow-md transition"
+            > */}
+          {appointments.map((appointment) => (
+            <div
+              key={appointment.appointment_id}
+              className="bg-white p-5 rounded-xl shadow hover:shadow-md transition"
             >
-              <h2 className="text-xl font-semibold">
-                {appointment.appointment_title}
-              </h2>
+              <Link to={`/appointments/${appointment.appointment_id}`}>
+                <h2 className="text-xl font-semibold">
+                  {appointment.appointment_title}
+                </h2>
 
-              <p className="text-gray-600">
-                {new Date(appointment.scheduled_at).toLocaleString()}
-              </p>
+                <p className="text-gray-600">
+                  {new Date(appointment.scheduled_at).toLocaleString()}
+                </p>
 
-              <p className="text-sm text-blue-600">
-                {appointment.meeting_timezone}
-              </p>
+                <p className="text-sm text-blue-600">
+                  {appointment.meeting_timezone}
+                </p>
 
-              <p className="text-sm text-gray-500">
-                Category: {appointment.category}
-              </p>
-            </Link>
+                <p className="text-sm text-gray-500">
+                  Category: {appointment.category}
+                </p>
+              </Link>
+              <div className="flex items-center justify-between mt-3">
+                <span className="text-sm text-gray-500">
+                  ❤️ {appointment.like_count || 0}
+                </span>
+
+                <button
+                  onClick={async (e) => {
+                    e.preventDefault();
+
+                    const { data } = await supabase.auth.getSession();
+                    const token = data.session?.access_token;
+
+                    const method = appointment.liked_by_user
+                      ? "DELETE"
+                      : "POST";
+
+                    await fetch(
+                      `${API_URL}/appointments/${appointment.appointment_id}/like`,
+                      {
+                        method,
+                        headers: {
+                          Authorization: `Bearer ${token}`,
+                        },
+                      },
+                    );
+
+                    // re-fetch after like/unlike
+                    window.location.reload();
+                  }}
+                  className={`px-3 py-1 rounded ${
+                    appointment.liked_by_user
+                      ? "bg-red-500 text-white"
+                      : "bg-gray-200"
+                  }`}
+                >
+                  {appointment.liked_by_user ? "Unlike" : "Like"}
+                </button>
+              </div>
+            </div>
           ))}
         </div>
       )}

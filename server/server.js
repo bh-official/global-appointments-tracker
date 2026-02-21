@@ -103,8 +103,10 @@ app.get("/appointments", authenticateUser, async (req, res) => {
         a.appointment_datetime AS scheduled_at,
         a.timezone AS meeting_timezone,
         c.category_name AS category,
+        COUNT(DISTINCT l.id) AS like_count,
+BOOL_OR(l.user_id = a.user_id) AS liked_by_user,
         array_agg(
-          json_build_object(
+          DISTINCT json_build_object(
             'reminder_id', r.id,
             'remind_before_minutes', r.reminder_minutes
           )
@@ -114,8 +116,12 @@ app.get("/appointments", authenticateUser, async (req, res) => {
         ON a.category_id = c.id
       LEFT JOIN reminders r 
         ON a.id = r.appointment_id
+      LEFT JOIN appointment_likes l 
+        ON a.id = l.appointment_id
+
       ${whereClause}
       GROUP BY a.id, c.category_name
+      
       ORDER BY a.appointment_datetime
       `,
       values,
@@ -233,6 +239,24 @@ app.post("/categories", authenticateUser, async (req, res) => {
   }
 });
 
+app.post("/appointments/:id/like", authenticateUser, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    await db.query(
+      `INSERT INTO appointment_likes (appointment_id, user_id)
+       VALUES ($1, $2)
+       ON CONFLICT DO NOTHING`,
+      [id, userId],
+    );
+
+    res.json({ message: "Liked successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Update
 app.put("/appointments/:id", authenticateUser, async (req, res) => {
   try {
@@ -275,6 +299,24 @@ app.delete("/appointments/:id", authenticateUser, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
+app.delete("/appointments/:id/like", authenticateUser, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+
+    await db.query(
+      `DELETE FROM appointment_likes
+       WHERE appointment_id = $1 AND user_id = $2`,
+      [id, userId],
+    );
+
+    res.json({ message: "Unliked successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Additional routes for updating appointments, managing categories, etc. can be added here
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, "0.0.0.0", () => {

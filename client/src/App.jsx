@@ -8,6 +8,7 @@ import Appointments from "./pages/Appointments";
 import AppointmentDetails from "./pages/AppointmentDetails";
 import CreateAppointment from "./pages/CreateAppointment";
 import ProtectedRoute from "./components/ProtectedRoute";
+import EditAppointment from "./pages/EditAppointment";
 
 export default function App() {
   return (
