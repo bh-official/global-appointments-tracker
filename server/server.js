@@ -281,6 +281,20 @@ app.put("/appointments/:id", authenticateUser, async (req, res) => {
     const { title, appointment_datetime, timezone, category_id, reminders } = req.body;
     const userId = req.user.id;
 
+    // CHECK EXISTING APPOINTMENT
+    const existing = await db.query(
+      "SELECT appointment_datetime FROM appointments WHERE id = $1 AND user_id = $2",
+      [id, userId]
+    );
+
+    if (existing.rows.length === 0) {
+      return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    if (new Date(existing.rows[0].appointment_datetime) < new Date()) {
+      return res.status(403).json({ error: "Cannot modify an appointment that has already passed." });
+    }
+
     // SERVER-SIDE VALIDATION: Prevent past appointments
     const now = new Date();
     if (new Date(appointment_datetime) < now) {

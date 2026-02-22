@@ -47,6 +47,13 @@ export default function EditAppointment() {
 
       const result = await response.json();
 
+      // CLIENT-SIDE GUARD: Don't allow editing past appointments
+      if (new Date(result.scheduled_at) < new Date()) {
+        alert("Cannot edit an appointment that has already passed.");
+        navigate(`/appointments/${id}`);
+        return;
+      }
+
       setFormData({
         title: result.appointment_title,
         appointment_datetime: result.scheduled_at.slice(0, 16),

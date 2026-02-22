@@ -134,12 +134,14 @@ export default function AppointmentDetails() {
             </span>
           </div>
           <div className="flex flex-wrap gap-3">
-            <button
-              onClick={() => navigate(`/appointments/${id}/edit`)}
-              className="btn-theme bg-white/10 hover:bg-white/20 text-white"
-            >
-              Edit Details
-            </button>
+            {new Date(appointment.scheduled_at) > new Date() && (
+              <button
+                onClick={() => navigate(`/appointments/${id}/edit`)}
+                className="btn-theme bg-white/10 hover:bg-white/20 text-white"
+              >
+                Edit Details
+              </button>
+            )}
             <button
               onClick={handleDelete}
               className="btn-theme bg-rose-500/20 hover:bg-rose-500/40 text-rose-200 border-rose-500/30"
