@@ -49,9 +49,11 @@ export default function Header() {
 
           {user && (
             <>
-              <Link to="/appointments" className={isActive("/appointments")}>
-                Appointments
-              </Link>
+              {location.pathname !== "/" && (
+                <Link to="/appointments" className={isActive("/appointments")}>
+                  Appointments
+                </Link>
+              )}
 
               <Link to="/create" className={isActive("/create")}>
                 Create
