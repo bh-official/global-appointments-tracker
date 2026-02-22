@@ -13,9 +13,9 @@ import EditAppointment from "./pages/EditAppointment";
 export default function App() {
   return (
     <BrowserRouter>
-      <div className="min-h-screen w-full bg-teal-500">
+      <div className="min-h-screen w-full bg-teal-500 flex flex-col">
         <Header />
-        <main className="flex-1 w-full px-6 flex justify-center">
+        <main className="flex-1 w-full px-6 flex flex-col items-center justify-center">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/auth" element={<Auth />} />

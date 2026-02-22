@@ -27,9 +27,9 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="w-full flex-1 flex flex-col items-center justify-center px-6 py-24 text-center">
+    <div className="w-full h-full flex flex-col items-center justify-center text-center">
       {/* HERO */}
-      <div className="max-w-4xl mb-12 animate-fade-in-up">
+      <div className="max-w-4xl animate-fade-in-up">
         <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
           Manage your appointments across different time zones, organized and secure.
         </h2>
