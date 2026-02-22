@@ -37,9 +37,12 @@ export default function Appointments() {
 
     fetchCategories();
   }, [API_URL]);
+  console.log("API URL:", API_URL);
 
   // fetch appointments with filters for category and date range
   useEffect(() => {
+    console.log("API URL:", API_URL);
+
     const fetchAppointments = async () => {
       try {
         setLoading(true);
@@ -96,107 +99,105 @@ export default function Appointments() {
   }
 
   return (
-    <div className="w-full p-6">
-      <h1 className="text-3xl font-bold mb-6">Browse by Category</h1>
+    <div className="w-full flex-1 px-6 py-24 max-w-7xl mx-auto">
+      <h1 className="text-4xl font-bold mb-10 text-white tracking-tight">Your Appointments</h1>
 
       {/* =========================
           CATEGORY FILTER
       ========================= */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-        <div
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12">
+        <button
           onClick={() => setSelectedCategory("")}
-          className={`border-2 rounded-xl p-6 cursor-pointer text-xl font-semibold transition
-          ${
-            selectedCategory === ""
-              ? "bg-blue-600 text-white"
-              : "border-blue-500 text-blue-600 hover:bg-blue-50"
-          }`}
+          className={`btn-theme py-4 text-lg ${selectedCategory === ""
+              ? "btn-theme-active bg-white/30"
+              : "bg-white/10 hover:bg-white/20"
+            }`}
         >
           All
-        </div>
+        </button>
 
         {categories.map((category) => (
-          <div
+          <button
             key={category.id}
             onClick={() => setSelectedCategory(category.category_name)}
-            className={`border-2 rounded-xl p-6 cursor-pointer text-xl font-semibold transition
-            ${
-              selectedCategory === category.category_name
-                ? "bg-blue-600 text-white"
-                : "border-blue-500 text-blue-600 hover:bg-blue-50"
-            }`}
+            className={`btn-theme py-4 text-lg ${selectedCategory === category.category_name
+                ? "btn-theme-active bg-white/30"
+                : "bg-white/10 hover:bg-white/20"
+              }`}
           >
             {category.category_name}
-          </div>
+          </button>
         ))}
       </div>
 
-      {/* =========================
-          DATE FILTER
-      ========================= */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {[
-          { label: "All", value: "" },
-          { label: "Upcoming", value: "upcoming" },
-          { label: "Past", value: "past" },
-          { label: "Today", value: "today" },
-          { label: "This Week", value: "week" },
-        ].map((range) => (
-          <button
-            key={range.value}
-            onClick={() => setSelectedRange(range.value)}
-            className={`px-3 py-1 rounded transition ${
-              selectedRange === range.value
-                ? "bg-green-600 text-white"
-                : "bg-white border"
-            }`}
-          >
-            {range.label}
-          </button>
-        ))}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+        {/* =========================
+            DATE FILTER
+        ========================= */}
+        <div className="flex flex-wrap gap-3">
+          {[
+            { label: "All", value: "" },
+            { label: "Upcoming", value: "upcoming" },
+            { label: "Past", value: "past" },
+            { label: "Today", value: "today" },
+            { label: "This Week", value: "week" },
+          ].map((range) => (
+            <button
+              key={range.value}
+              onClick={() => setSelectedRange(range.value)}
+              className={`btn-theme px-6 text-sm ${selectedRange === range.value
+                  ? "btn-theme-active bg-white/30"
+                  : "bg-white/10 hover:bg-white/20"
+                }`}
+            >
+              {range.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* =========================
           APPOINTMENT CARDS
       ========================= */}
       {appointments.length === 0 ? (
-        <p className="text-gray-600">
+        <div className="glass-card p-12 text-center text-white/70 text-xl">
           No appointments found for selected filters.
-        </p>
+        </div>
       ) : (
-        <div className="grid gap-4">
-          {/* {appointments.map((appointment) => (
-            <Link
-              key={appointment.appointment_id}
-              to={`/appointments/${appointment.appointment_id}`}
-              className="block bg-white p-5 rounded-xl shadow hover:shadow-md transition"
-            > */}
+        <div className="grid md:grid-cols-2 gap-6">
           {appointments.map((appointment) => (
             <div
               key={appointment.appointment_id}
-              className="bg-white p-5 rounded-xl shadow hover:shadow-md transition"
+              className="glass-card p-6 flex flex-col justify-between"
             >
-              <Link to={`/appointments/${appointment.appointment_id}`}>
-                <h2 className="text-xl font-semibold">
-                  {appointment.appointment_title}
-                </h2>
+              <Link to={`/appointments/${appointment.appointment_id}`} className="group">
+                <div className="flex justify-between items-start mb-4">
+                  <h2 className="text-2xl font-bold text-white group-hover:text-white/80 transition">
+                    {appointment.appointment_title}
+                  </h2>
+                  <span className="bg-white/20 text-white text-xs px-3 py-1 rounded-full uppercase tracking-wider font-semibold">
+                    {appointment.category}
+                  </span>
+                </div>
 
-                <p className="text-gray-600">
-                  {new Date(appointment.scheduled_at).toLocaleString()}
-                </p>
+                <div className="space-y-2 mb-6">
+                  <p className="text-white font-medium flex items-center gap-2">
+                    <span className="opacity-70">📅</span>
+                    {new Date(appointment.scheduled_at).toLocaleString()}
+                  </p>
 
-                <p className="text-sm text-blue-600">
-                  {appointment.meeting_timezone}
-                </p>
-
-                <p className="text-sm text-gray-500">
-                  Category: {appointment.category}
-                </p>
+                  <p className="text-white/70 text-sm flex items-center gap-2">
+                    <span className="opacity-70">🌐</span>
+                    {appointment.meeting_timezone}
+                  </p>
+                </div>
               </Link>
-              <div className="flex items-center justify-between mt-3">
-                <span className="text-sm text-gray-500">
-                  ❤️ {appointment.like_count || 0}
-                </span>
+
+              <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
+                <div className="flex items-center gap-2 text-white/80">
+                  <span className="text-lg">❤️</span>
+                  <span className="font-bold">{appointment.like_count || 0}</span>
+                </div>
 
                 <button
                   onClick={async (e) => {
@@ -222,13 +223,12 @@ export default function Appointments() {
                     // re-fetch after like/unlike
                     window.location.reload();
                   }}
-                  className={`px-3 py-1 rounded ${
-                    appointment.liked_by_user
-                      ? "bg-red-500 text-white"
-                      : "bg-gray-200"
-                  }`}
+                  className={`btn-theme text-sm px-6 ${appointment.liked_by_user
+                      ? "bg-rose-500/40 border-rose-500/50"
+                      : "bg-white/10 hover:bg-white/20"
+                    }`}
                 >
-                  {appointment.liked_by_user ? "Unlike" : "Like"}
+                  {appointment.liked_by_user ? "Liked" : "Like"}
                 </button>
               </div>
             </div>

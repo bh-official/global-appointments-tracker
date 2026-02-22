@@ -122,58 +122,95 @@ export default function AppointmentDetails() {
   };
 
   return (
-    <div className="w-full p-6">
-      <h1 className="text-2xl font-bold mb-4">
-        {appointment.appointment_title}
-      </h1>
-
-      <div className="mt-4 space-y-2">
-        <p>
-          <strong>Scheduled Time ({appointment.meeting_timezone}):</strong>{" "}
-          {formatDate(appointment.scheduled_at, appointment.meeting_timezone)}
-        </p>
-
-        <p>
-          <strong>Your Local Time:</strong>{" "}
-          {formatDate(
-            appointment.scheduled_at,
-            Intl.DateTimeFormat().resolvedOptions().timeZone,
-          )}
-        </p>
-
-        <p className="text-green-600 font-medium">
-          {getTimeDifference(appointment.scheduled_at)}
-        </p>
-
-        <p className="text-blue-600 font-semibold">Countdown: {countdown}</p>
-      </div>
-
-      {appointment.reminders &&
-        Array.isArray(appointment.reminders) &&
-        appointment.reminders.length > 0 && (
-          <div className="mt-4">
-            <h3 className="font-semibold">Reminders:</h3>
-            {appointment.reminders.map((r) => (
-              <p key={r.reminder_id}>
-                {r.remind_before_minutes} minutes before
-              </p>
-            ))}
+    <div className="w-full flex-1 px-6 py-24 max-w-4xl mx-auto">
+      <div className="glass-card p-8 md:p-12">
+        <div className="flex flex-col md:flex-row justify-between items-start mb-10 gap-6">
+          <div>
+            <h1 className="text-4xl font-bold text-white mb-2">
+              {appointment.appointment_title}
+            </h1>
+            <span className="bg-white/20 text-white text-xs px-4 py-1 rounded-full uppercase tracking-wider font-bold">
+              {appointment.category || "General"}
+            </span>
           </div>
-        )}
-      <button
-        onClick={() => navigate(`/appointments/${id}/edit`)}
-        className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded"
-      >
-        Edit Appointment
-      </button>
+          <div className="flex flex-wrap gap-3">
+            <button
+              onClick={() => navigate(`/appointments/${id}/edit`)}
+              className="btn-theme bg-white/10 hover:bg-white/20 text-white"
+            >
+              Edit Details
+            </button>
+            <button
+              onClick={handleDelete}
+              className="btn-theme bg-rose-500/20 hover:bg-rose-500/40 text-rose-200 border-rose-500/30"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
 
-      {/* DELETE BUTTON */}
-      <button
-        onClick={handleDelete}
-        className="mt-6 bg-red-600 text-white px-4 py-2 rounded"
-      >
-        Delete Appointment
-      </button>
+        <div className="grid md:grid-cols-2 gap-10">
+          <div className="space-y-8">
+            <section>
+              <h3 className="text-white/50 text-sm font-bold uppercase tracking-widest mb-4">Timing</h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-4 text-white">
+                  <span className="text-2xl">📅</span>
+                  <div>
+                    <p className="font-bold text-lg">
+                      {formatDate(appointment.scheduled_at, appointment.meeting_timezone)}
+                    </p>
+                    <p className="text-white/60 text-sm">Scheduled ({appointment.meeting_timezone})</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 text-white">
+                  <span className="text-2xl">🕒</span>
+                  <div>
+                    <p className="font-bold text-lg">
+                      {formatDate(
+                        appointment.scheduled_at,
+                        Intl.DateTimeFormat().resolvedOptions().timeZone,
+                      )}
+                    </p>
+                    <p className="text-white/60 text-sm">Your Local Time</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <h3 className="text-white/50 text-sm font-bold uppercase tracking-widest mb-4">Status</h3>
+              <div className="glass-card bg-white/5 p-4 inline-block">
+                <p className="text-white font-bold flex items-center gap-2">
+                  <span className="animate-pulse w-2 h-2 rounded-full bg-emerald-400"></span>
+                  {countdown}
+                </p>
+                <p className="text-white/60 text-xs mt-1">
+                  {getTimeDifference(appointment.scheduled_at)}
+                </p>
+              </div>
+            </section>
+          </div>
+
+          <div className="space-y-8">
+            {appointment.reminders &&
+              Array.isArray(appointment.reminders) &&
+              appointment.reminders.length > 0 && (
+                <section>
+                  <h3 className="text-white/50 text-sm font-bold uppercase tracking-widest mb-4">Email Reminders</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {appointment.reminders.map((r) => (
+                      <span key={r.reminder_id} className="glass-card bg-white/10 px-4 py-2 text-white text-sm font-medium">
+                        🔔 {r.remind_before_minutes} mins before
+                      </span>
+                    ))}
+                  </div>
+                </section>
+              )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

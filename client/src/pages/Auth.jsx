@@ -48,46 +48,48 @@ export default function Auth() {
   };
 
   return (
-    <div className="w-full p-6 bg-teal-500 flex items-center justify-center px-6">
-      <div className="bg-white p-10 rounded-xl shadow w-full max-w-md">
-        <h2 className="text-2xl font-semibold mb-6 text-center">
-          {mode === "login" ? "Login" : "Create Account"}
+    <div className="w-full flex-1 flex items-center justify-center px-6 py-20">
+      <div className="glass-card p-10 w-full max-w-md">
+        <h2 className="text-3xl font-bold mb-8 text-center text-white">
+          {mode === "login" ? "Welcome Back" : "Create Account"}
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className="w-full border p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-4">
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full bg-white/10 border border-white/20 p-3 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30"
+            />
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full border p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="w-full bg-white/10 border border-white/20 p-3 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/30"
+            />
+          </div>
 
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition"
+            className="w-full btn-theme bg-white/20 hover:bg-white/30 text-white font-bold py-3 text-lg"
           >
             {mode === "login" ? "Login" : "Sign Up"}
           </button>
         </form>
 
-        <p className="text-sm text-center mt-6 text-gray-600">
+        <p className="text-sm text-center mt-8 text-white/70">
           {mode === "login"
             ? "Don't have an account?"
             : "Already have an account?"}{" "}
           <button
             onClick={() => setMode(mode === "login" ? "signup" : "login")}
-            className="text-blue-600 hover:underline"
+            className="text-white font-semibold hover:underline"
           >
             {mode === "login" ? "Sign up" : "Login"}
           </button>

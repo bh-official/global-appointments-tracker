@@ -27,58 +27,59 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center justify-center px-6 text-center">
+    <div className="w-full flex-1 flex flex-col items-center justify-center px-6 py-24 text-center">
       {/* HERO */}
-      {/* <h1 className="text-4xl font-bold mb-6">Global Appointments Tracker</h1> */}
+      <div className="max-w-4xl mb-12">
+        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+          Manage your appointments across different time zones, organized and secure.
+        </h2>
+        <p className="text-xl text-white/80 mb-10">
+          Everything structured in one place, with smart reminders and easy filtering.
+        </p>
 
-      <h2 className="text-3xl max-w-4xl text-gray-600 mb-6">
-        Manage your appointments across different time zones, organize them by
-        category, set reminders, and keep everything structured in one secure
-        place.
-      </h2>
-
-      {/* before login*/}
-      <div className="space-x-4 mb-12">
-        {!user ? (
-          <>
+        {/* Action Button */}
+        <div className="flex justify-center">
+          {!user ? (
             <Link
               to="/auth"
-              className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition"
+              className="btn-theme bg-white/20 hover:bg-white/30 text-white px-8 py-4 text-xl font-bold"
             >
-              Login
+              Get Started
             </Link>
-          </>
-        ) : (
-          <Link
-            to="/appointments"
-            className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition"
-          >
-            Go to My Appointments
-          </Link>
-        )}
+          ) : (
+            <Link
+              to="/appointments"
+              className="btn-theme bg-white/20 hover:bg-white/30 text-white px-8 py-4 text-xl font-bold"
+            >
+              Go to My Appointments
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* FEATURES */}
-      <div className="grid md:grid-cols-3 gap-8 max-w-5xl">
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h3 className="font-semibold text-lg mb-2">Timezone Aware</h3>
-          <p className="text-gray-600 text-sm">
-            Schedule meetings across different countries without confusion.
+      <div className="grid md:grid-cols-3 gap-8 max-w-6xl w-full">
+        <div className="glass-card p-8 text-white">
+          <div className="text-3xl mb-4">🌍</div>
+          <h3 className="font-bold text-xl mb-3">Timezone Aware</h3>
+          <p className="text-white/70 text-sm leading-relaxed">
+            Schedule meetings across different countries without confusion. Automatic offset calculations.
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h3 className="font-semibold text-lg mb-2">Smart Filtering</h3>
-          <p className="text-gray-600 text-sm">
-            Filter appointments by category, date range, upcoming, past, or
-            week.
+        <div className="glass-card p-8 text-white">
+          <div className="text-3xl mb-4">🔍</div>
+          <h3 className="font-bold text-xl mb-3">Smart Filtering</h3>
+          <p className="text-white/70 text-sm leading-relaxed">
+            Filter by category, date range, upcoming or past. Keep your schedule focused.
           </p>
         </div>
 
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h3 className="font-semibold text-lg mb-2">Secure & Private</h3>
-          <p className="text-gray-600 text-sm">
-            Each user can only view and manage their own appointments.
+        <div className="glass-card p-8 text-white">
+          <div className="text-3xl mb-4">🛡️</div>
+          <h3 className="font-bold text-xl mb-3">Secure & Private</h3>
+          <p className="text-white/70 text-sm leading-relaxed">
+            Each user can only view and manage their own appointments. Your data is protected.
           </p>
         </div>
       </div>

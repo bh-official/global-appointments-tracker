@@ -3,6 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import pg from "pg";
 import { createClient } from "@supabase/supabase-js";
+import nodemailer from "nodemailer";
+import cron from "node-cron";
 
 dotenv.config();
 const app = express();
@@ -98,37 +100,46 @@ app.get("/appointments", authenticateUser, async (req, res) => {
     const result = await db.query(
       `
       SELECT 
-        a.id AS appointment_id,
-        a.title AS appointment_title,
-        a.appointment_datetime AS scheduled_at,
-        a.timezone AS meeting_timezone,
-        c.category_name AS category,
-        COUNT(DISTINCT l.id) AS like_count,
-BOOL_OR(l.user_id = a.user_id) AS liked_by_user,
-        array_agg(
-          DISTINCT json_build_object(
-            'reminder_id', r.id,
-            'remind_before_minutes', r.reminder_minutes
-          )
-        ) FILTER (WHERE r.id IS NOT NULL) AS reminders
-      FROM appointments a
-      LEFT JOIN categories c 
-        ON a.category_id = c.id
-      LEFT JOIN reminders r 
-        ON a.id = r.appointment_id
-      LEFT JOIN appointment_likes l 
-        ON a.id = l.appointment_id
+  a.id AS appointment_id,
+  a.title AS appointment_title,
+  a.appointment_datetime AS scheduled_at,
+  a.timezone AS meeting_timezone,
+  c.category_name AS category,
 
-      ${whereClause}
-      GROUP BY a.id, c.category_name
-      
-      ORDER BY a.appointment_datetime
+  COUNT(DISTINCT l.id) AS like_count,
+
+  COALESCE(
+    MAX(CASE WHEN l.user_id = $1 THEN 1 ELSE 0 END),
+    0
+  ) = 1 AS liked_by_user,
+
+  array_agg(
+    json_build_object(
+      'reminder_id', r.id,
+      'remind_before_minutes', r.reminder_minutes
+    )
+  ) FILTER (WHERE r.id IS NOT NULL) AS reminders
+
+FROM appointments a
+LEFT JOIN categories c 
+  ON a.category_id = c.id
+LEFT JOIN reminders r 
+  ON a.id = r.appointment_id
+LEFT JOIN appointment_likes l 
+  ON a.id = l.appointment_id
+
+${whereClause}
+
+GROUP BY a.id, c.category_name
+ORDER BY a.appointment_datetime
+
       `,
       values,
     );
 
     res.json(result.rows);
   } catch (err) {
+    console.error("APPOINTMENTS ERROR:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -315,6 +326,83 @@ app.delete("/appointments/:id/like", authenticateUser, async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+
+// EMAIL REMINDER LOGIC
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || "smtp.ethereal.email",
+  port: process.env.SMTP_PORT || 587,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+
+const checkAndSendReminders = async () => {
+  try {
+    const result = await db.query(`
+      SELECT 
+        r.id as reminder_id, 
+        r.reminder_minutes, 
+        a.id as appointment_id, 
+        a.title, 
+        a.appointment_datetime, 
+        a.user_id 
+      FROM reminders r
+      JOIN appointments a ON r.appointment_id = a.id
+      WHERE r.is_sent = FALSE
+        AND (a.appointment_datetime - (r.reminder_minutes * INTERVAL '1 minute')) <= NOW()
+        AND a.appointment_datetime > NOW() - INTERVAL '1 day';
+    `);
+
+    for (let reminder of result.rows) {
+      const { data: userData, error: userError } = await supabaseAdmin.auth.admin.getUserById(reminder.user_id);
+
+      if (userError || !userData.user) {
+        console.error(`User not found for reminder ${reminder.reminder_id}:`, userError);
+        continue;
+      }
+
+      const userEmail = userData.user.email;
+
+      const mailOptions = {
+        from: '"Global Appointments" <no-reply@appointments.com>',
+        to: userEmail,
+        subject: `Reminder: ${reminder.title}`,
+        text: `Hello! This is a reminder that your appointment "${reminder.title}" is scheduled for ${new Date(reminder.appointment_datetime).toLocaleString()}.`,
+        html: `
+          <div style="font-family: sans-serif; padding: 20px; border: 1px solid #eee;">
+            <h2 style="color: #0d9488;">Appointment Reminder</h2>
+            <p>Hello!</p>
+            <p>This is a reminder for your upcoming appointment:</p>
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin: 20px 0;">
+              <h3 style="margin: 0;">${reminder.title}</h3>
+              <p style="margin: 5px 0; color: #64748b;">Scheduled for: ${new Date(reminder.appointment_datetime).toLocaleString()}</p>
+            </div>
+            <p style="font-size: 14px; color: #94a3b8;">Sent via Global Appointments Tracker</p>
+          </div>
+        `,
+      };
+
+      try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Email sent to ${userEmail} for reminder ${reminder.reminder_id}`);
+
+        await db.query(`UPDATE reminders SET is_sent = TRUE WHERE id = $1`, [reminder.reminder_id]);
+      } catch (sendError) {
+        console.error(`Failed to send email to ${userEmail}:`, sendError);
+      }
+    }
+  } catch (err) {
+    console.error("CRON ERROR:", err);
+  }
+};
+
+// Run every minute
+cron.schedule("* * * * *", () => {
+  console.log("Checking for reminders...");
+  checkAndSendReminders();
 });
 
 // Additional routes for updating appointments, managing categories, etc. can be added here
