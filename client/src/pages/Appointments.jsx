@@ -105,7 +105,7 @@ export default function Appointments() {
 
   return (
     <div className="w-full flex-1 px-6 py-24 max-w-7xl mx-auto">
-      <h1 className="text-4xl font-bold mb-10 text-white tracking-tight">Your Appointments</h1>
+      <h1 className="text-3xl font-bold mb-10 text-white tracking-tight">My Appointments</h1>
 
       {/* =========================
           CATEGORY FILTER

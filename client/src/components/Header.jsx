@@ -39,8 +39,8 @@ export default function Header() {
 
   return (
     <header className="fixed top-0 left-0 w-full glass-header text-white z-50">
-      <div className={`max-w-7xl mx-auto flex ${location.pathname === "/" ? 'justify-center' : 'justify-between'} items-center px-6 py-4 relative`}>
-        <h1 className={`text-xl font-bold tracking-tight ${location.pathname === "/" ? 'text-center' : ''}`}>Global Appointments</h1>
+      <div className={`max-w-7xl mx-auto flex ${location.pathname === "/" ? 'justify-center' : 'justify-between'} items-center px-6 h-20 relative`}>
+        <h1 className={`text-4xl font-bold tracking-tight ${location.pathname === "/" ? 'text-center' : ''}`}>Global Appointments</h1>
 
         <nav className={`space-x-4 flex items-center ${location.pathname === "/" ? 'absolute right-6' : ''}`}>
           {location.pathname !== "/" && (

@@ -31,9 +31,9 @@ export default function Home() {
       {/* HERO SECTION - Matches Splash Screen Centering */}
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center animate-fade-in-up">
         <div className="max-w-4xl mb-8">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
+          <h3 className="text-3xl md:text-3xl font-bold text-white mb-4 leading-tight">
             Manage your appointments across different time zones, organized and secure.
-          </h2>
+          </h3>
           <p className="text-xl text-white/80 mb-8">
             Everything structured in one place, with smart reminders and easy filtering.
           </p>
