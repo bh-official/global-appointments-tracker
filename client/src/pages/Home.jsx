@@ -29,12 +29,12 @@ export default function Home() {
   return (
     <div className="w-full flex flex-col items-center px-6">
       {/* HERO SECTION - Matches Splash Screen Centering */}
-      <div className="min-h-[80vh] flex flex-col items-center justify-center text-center animate-fade-in-up">
-        <div className="max-w-4xl mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center animate-fade-in-up">
+        <div className="max-w-4xl mb-8">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
             Manage your appointments across different time zones, organized and secure.
           </h2>
-          <p className="text-xl text-white/80 mb-10">
+          <p className="text-xl text-white/80 mb-8">
             Everything structured in one place, with smart reminders and easy filtering.
           </p>
 
@@ -61,7 +61,7 @@ export default function Home() {
       </div>
 
       {/* FEATURES */}
-      <div className="grid md:grid-cols-3 gap-8 max-w-6xl w-full pb-24">
+      <div className="grid md:grid-cols-3 gap-8 max-w-6xl w-full pb-16">
         <div className="glass-card p-8 text-white delay-100">
           <div className="text-3xl mb-4 animate-float">🌍</div>
           <h3 className="font-bold text-xl mb-3">Timezone Aware</h3>
