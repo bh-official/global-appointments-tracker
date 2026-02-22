@@ -62,7 +62,7 @@ export default function Home() {
 
       {/* FEATURES */}
       <div className="grid md:grid-cols-3 gap-8 max-w-6xl w-full pb-16">
-        <div className="glass-card p-8 text-white delay-100">
+        <div className="glass-card p-8 text-white delay-100 flex flex-col items-center text-center">
           <div className="text-3xl mb-4 animate-float">🌍</div>
           <h3 className="font-bold text-xl mb-3">Timezone Aware</h3>
           <p className="text-white/70 text-sm leading-relaxed">
@@ -70,7 +70,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="glass-card p-8 text-white delay-200">
+        <div className="glass-card p-8 text-white delay-200 flex flex-col items-center text-center">
           <div className="text-3xl mb-4 animate-float" style={{ animationDelay: '1s' }}>🔍</div>
           <h3 className="font-bold text-xl mb-3">Smart Filtering</h3>
           <p className="text-white/70 text-sm leading-relaxed">
@@ -78,7 +78,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="glass-card p-8 text-white delay-300">
+        <div className="glass-card p-8 text-white delay-300 flex flex-col items-center text-center">
           <div className="text-3xl mb-4 animate-float" style={{ animationDelay: '2s' }}>🛡️</div>
           <h3 className="font-bold text-xl mb-3">Secure & Private</h3>
           <p className="text-white/70 text-sm leading-relaxed">
