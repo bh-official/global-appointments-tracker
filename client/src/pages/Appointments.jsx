@@ -38,7 +38,6 @@ export default function Appointments() {
 
     fetchCategories();
   }, [API_URL]);
-  console.log("API URL:", API_URL);
 
   // fetch appointments with filters for category and date range
   useEffect(() => {
@@ -88,7 +87,6 @@ export default function Appointments() {
 
     // IMPLEMENT POLLING (Assignment Requirement)
     const interval = setInterval(() => {
-      console.log("Polling database for new appointments...");
       fetchAppointments(false); // fetch silently in background
     }, 60000); // 60 seconds
 

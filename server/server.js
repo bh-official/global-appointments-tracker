@@ -43,7 +43,6 @@ const authenticateUser = async (req, res, next) => {
     return res.status(401).json({ error: "Unauthorized" });
   }
 };
-// This route is just for testing if the server is up and running
 app.get("/", (req, res) => {
   res.status(200).json("You've reached the server");
 });
@@ -155,7 +154,7 @@ app.get("/categories", authenticateUser, async (req, res) => {
   }
 });
 
-// get appointment using single ID, useful for editing an appointment
+// Get appointment by ID
 app.get("/appointments/:id", authenticateUser, async (req, res) => {
   try {
     const { id } = req.params;
@@ -240,7 +239,7 @@ app.post("/appointments", authenticateUser, async (req, res) => {
   }
 });
 
-// Create new category (admin functionality, can be extended to allow users to create their own categories)
+// Categories
 
 app.post("/categories", authenticateUser, async (req, res) => {
   try {
@@ -433,7 +432,6 @@ cron.schedule("* * * * *", () => {
   checkAndSendReminders();
 });
 
-// Additional routes for updating appointments, managing categories, etc. can be added here
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
