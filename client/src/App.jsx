@@ -15,7 +15,7 @@ export default function App() {
     <BrowserRouter>
       <div className="min-h-screen w-full bg-teal-500 flex flex-col">
         <Header />
-        <main className="flex-1 w-full px-6 flex flex-col items-center justify-center">
+        <main className="flex-1 w-full px-6 flex flex-col items-center">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/auth" element={<Auth />} />

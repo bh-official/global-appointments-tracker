@@ -27,38 +27,41 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center text-center">
-      {/* HERO */}
-      <div className="max-w-4xl animate-fade-in-up">
-        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
-          Manage your appointments across different time zones, organized and secure.
-        </h2>
-        <p className="text-xl text-white/80 mb-10">
-          Everything structured in one place, with smart reminders and easy filtering.
-        </p>
+    <div className="w-full flex flex-col items-center px-6">
+      {/* HERO SECTION - Matches Splash Screen Centering */}
+      <div className="min-h-[80vh] flex flex-col items-center justify-center text-center animate-fade-in-up">
+        <div className="max-w-4xl mb-12">
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+            Manage your appointments across different time zones, organized and secure.
+          </h2>
+          <p className="text-xl text-white/80 mb-10">
+            Everything structured in one place, with smart reminders and easy filtering.
+          </p>
 
-        {/* Action Button */}
-        <div className="flex justify-center">
-          {!user ? (
-            <Link
-              to="/auth"
-              className="btn-theme bg-white/20 hover:bg-white/30 text-white px-8 py-4 text-xl font-bold"
-            >
-              Get Started
-            </Link>
-          ) : (
-            <Link
-              to="/appointments"
-              className="btn-theme bg-white/20 hover:bg-white/30 text-white px-8 py-4 text-xl font-bold"
-            >
-              Go to My Appointments
-            </Link>
-          )}
+          {/* Action Button */}
+          <div className="flex justify-center">
+            {!user ? (
+              <Link
+                to="/auth"
+                className="btn-theme bg-white/20 hover:bg-white/30 text-white px-8 py-4 text-xl font-bold"
+              >
+                Get Started
+              </Link>
+            ) : (
+              <Link
+                to="/appointments"
+                className="btn-theme bg-white/20 hover:bg-white/30 text-white px-8 py-4 text-xl font-bold"
+              >
+                Go to My Appointments
+              </Link>
+            )}
+          </div>
         </div>
+
       </div>
 
       {/* FEATURES */}
-      <div className="grid md:grid-cols-3 gap-8 max-w-6xl w-full">
+      <div className="grid md:grid-cols-3 gap-8 max-w-6xl w-full pb-24">
         <div className="glass-card p-8 text-white delay-100">
           <div className="text-3xl mb-4 animate-float">🌍</div>
           <h3 className="font-bold text-xl mb-3">Timezone Aware</h3>
