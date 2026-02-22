@@ -15,6 +15,7 @@ export default function EditAppointment() {
     appointment_datetime: "",
     timezone: "",
     category_id: "",
+    reminders: "",
   });
 
   // FETCH CATEGORIES
@@ -52,6 +53,9 @@ export default function EditAppointment() {
         timezone: result.meeting_timezone,
         category_id:
           categories.find((c) => c.category_name === result.category)?.id || "",
+        reminders: result.reminders
+          ? result.reminders.map((r) => r.remind_before_minutes).join(", ")
+          : "",
       });
     };
 
@@ -77,6 +81,10 @@ export default function EditAppointment() {
       return;
     }
 
+    const reminderArray = formData.reminders
+      ? formData.reminders.split(",").map((r) => Number(r.trim())).filter(n => !isNaN(n))
+      : [];
+
     const { data } = await supabase.auth.getSession();
     const token = data.session?.access_token;
 
@@ -91,6 +99,7 @@ export default function EditAppointment() {
         appointment_datetime: formData.appointment_datetime,
         timezone: formData.timezone,
         category_id: Number(formData.category_id),
+        reminders: reminderArray,
       }),
     });
 
@@ -163,6 +172,18 @@ export default function EditAppointment() {
                 </option>
               ))}
             </select>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-white/70 ml-1">Reminders (minutes before)</label>
+            <input
+              type="text"
+              name="reminders"
+              placeholder="e.g. 15, 30, 60"
+              value={formData.reminders}
+              onChange={handleChange}
+              className="w-full bg-white/10 border border-white/20 p-3 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/30"
+            />
           </div>
 
           <div className="pt-4">

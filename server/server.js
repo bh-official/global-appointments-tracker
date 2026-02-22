@@ -207,6 +207,13 @@ app.post("/appointments", authenticateUser, async (req, res) => {
       reminders,
     } = req.body;
     const userId = req.user.id;
+
+    // SERVER-SIDE VALIDATION: Prevent past appointments
+    const now = new Date();
+    if (new Date(appointment_datetime) < now) {
+      return res.status(400).json({ error: "Cannot schedule appointments in the past." });
+    }
+
     const newAppointment = await db.query(
       `INSERT INTO appointments
        (title, appointment_datetime, timezone, category_id, user_id)
@@ -272,7 +279,14 @@ app.post("/appointments/:id/like", authenticateUser, async (req, res) => {
 app.put("/appointments/:id", authenticateUser, async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, appointment_datetime, timezone, category_id } = req.body;
+    const { title, appointment_datetime, timezone, category_id, reminders } = req.body;
+    const userId = req.user.id;
+
+    // SERVER-SIDE VALIDATION: Prevent past appointments
+    const now = new Date();
+    if (new Date(appointment_datetime) < now) {
+      return res.status(400).json({ error: "Cannot set appointment to a past time." });
+    }
 
     const result = await db.query(
       `UPDATE appointments
@@ -282,11 +296,25 @@ app.put("/appointments/:id", authenticateUser, async (req, res) => {
            category_id = $4
        WHERE id = $5 AND user_id = $6
        RETURNING *`,
-      [title, appointment_datetime, timezone, category_id, id, req.user.id],
+      [title, appointment_datetime, timezone, category_id, id, userId],
     );
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Appointment not found" });
+    }
+
+    // UPDATE REMINDERS: Delete old and insert new
+    // Also reset is_sent if the time was changed
+    await db.query("DELETE FROM reminders WHERE appointment_id = $1", [id]);
+
+    if (reminders && reminders.length > 0) {
+      for (let minutes of reminders) {
+        await db.query(
+          `INSERT INTO reminders (appointment_id, reminder_minutes, is_sent)
+           VALUES ($1, $2, FALSE)`,
+          [id, minutes],
+        );
+      }
     }
 
     res.json(result.rows[0]);
