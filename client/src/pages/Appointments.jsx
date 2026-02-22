@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useParams, useNavigate } from "react-router";
 import { supabase } from "../lib/supabase";
 
 export default function Appointments() {
+  const { categoryName } = useParams();
+  const navigate = useNavigate();
   const API_URL = import.meta.env.VITE_API_URL;
 
   const [appointments, setAppointments] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedRange, setSelectedRange] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -41,24 +42,22 @@ export default function Appointments() {
 
   // fetch appointments with filters for category and date range
   useEffect(() => {
-    console.log("API URL:", API_URL);
-
-    const fetchAppointments = async () => {
+    const fetchAppointments = async (showLoading = true) => {
       try {
-        setLoading(true);
+        if (showLoading) setLoading(true);
 
         const { data } = await supabase.auth.getSession();
         const token = data.session?.access_token;
         if (!token) {
           setError("Not authenticated.");
-          setLoading(false);
+          if (showLoading) setLoading(false);
           return;
         }
 
         let url = `${API_URL}/appointments`;
         const params = new URLSearchParams();
 
-        if (selectedCategory) params.append("category", selectedCategory);
+        if (categoryName) params.append("category", categoryName);
 
         if (selectedRange) params.append("range", selectedRange);
 
@@ -81,12 +80,20 @@ export default function Appointments() {
         console.error(err);
         setError("Something went wrong while fetching data.");
       } finally {
-        setLoading(false);
+        if (showLoading) setLoading(false);
       }
     };
 
     fetchAppointments();
-  }, [API_URL, selectedCategory, selectedRange]);
+
+    // IMPLEMENT POLLING (Assignment Requirement)
+    const interval = setInterval(() => {
+      console.log("Polling database for new appointments...");
+      fetchAppointments(false); // fetch silently in background
+    }, 60000); // 60 seconds
+
+    return () => clearInterval(interval);
+  }, [API_URL, categoryName, selectedRange]);
 
   // rendering logic
 
@@ -107,10 +114,10 @@ export default function Appointments() {
       ========================= */}
       <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12">
         <button
-          onClick={() => setSelectedCategory("")}
-          className={`btn-theme py-4 text-lg ${selectedCategory === ""
-              ? "btn-theme-active bg-white/30"
-              : "bg-white/10 hover:bg-white/20"
+          onClick={() => navigate("/appointments")}
+          className={`btn-theme py-4 text-lg ${!categoryName
+            ? "btn-theme-active bg-white/30"
+            : "bg-white/10 hover:bg-white/20"
             }`}
         >
           All
@@ -119,10 +126,10 @@ export default function Appointments() {
         {categories.map((category) => (
           <button
             key={category.id}
-            onClick={() => setSelectedCategory(category.category_name)}
-            className={`btn-theme py-4 text-lg ${selectedCategory === category.category_name
-                ? "btn-theme-active bg-white/30"
-                : "bg-white/10 hover:bg-white/20"
+            onClick={() => navigate(`/appointments/category/${category.category_name}`)}
+            className={`btn-theme py-4 text-lg ${categoryName === category.category_name
+              ? "btn-theme-active bg-white/30"
+              : "bg-white/10 hover:bg-white/20"
               }`}
           >
             {category.category_name}
@@ -146,8 +153,8 @@ export default function Appointments() {
               key={range.value}
               onClick={() => setSelectedRange(range.value)}
               className={`btn-theme px-6 text-sm ${selectedRange === range.value
-                  ? "btn-theme-active bg-white/30"
-                  : "bg-white/10 hover:bg-white/20"
+                ? "btn-theme-active bg-white/30"
+                : "bg-white/10 hover:bg-white/20"
                 }`}
             >
               {range.label}
@@ -224,8 +231,8 @@ export default function Appointments() {
                     window.location.reload();
                   }}
                   className={`btn-theme text-sm px-6 ${appointment.liked_by_user
-                      ? "bg-rose-500/40 border-rose-500/50"
-                      : "bg-white/10 hover:bg-white/20"
+                    ? "bg-rose-500/40 border-rose-500/50"
+                    : "bg-white/10 hover:bg-white/20"
                     }`}
                 >
                   {appointment.liked_by_user ? "Liked" : "Like"}
