@@ -170,10 +170,11 @@ export default function Appointments() {
         </div>
       ) : (
         <div className="grid md:grid-cols-2 gap-6">
-          {appointments.map((appointment) => (
+          {appointments.map((appointment, index) => (
             <div
               key={appointment.appointment_id}
               className="glass-card p-6 flex flex-col justify-between"
+              style={{ animationDelay: `${index * 100}ms` }}
             >
               <Link to={`/appointments/${appointment.appointment_id}`} className="group">
                 <div className="flex justify-between items-start mb-4">
