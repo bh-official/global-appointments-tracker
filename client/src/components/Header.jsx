@@ -43,9 +43,11 @@ export default function Header() {
         <h1 className="text-xl font-bold tracking-tight">Global Appointments</h1>
 
         <nav className="space-x-4 flex items-center">
-          <Link to="/" className={isActive("/")}>
-            Home
-          </Link>
+          {location.pathname !== "/" && (
+            <Link to="/" className={isActive("/")}>
+              Home
+            </Link>
+          )}
 
           {user && (
             <>
