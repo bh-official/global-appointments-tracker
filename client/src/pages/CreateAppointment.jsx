@@ -155,22 +155,50 @@ export default function CreateAppointment() {
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 relative">
               <label className="text-sm font-medium text-white/70 ml-1">Timezone</label>
-              <select
-                name="timezone"
-                value={formData.timezone}
-                onChange={handleChange}
-                className="w-full bg-white/10 border border-white/20 p-3 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-white/30 [color-scheme:dark]"
-                required
-              >
-                <option value="" className="bg-teal-900">Select Timezone</option>
-                {timeZones.map((tz) => (
-                  <option key={tz} value={tz} className="bg-teal-900 text-white">
-                    {getOffsetLabel(tz)}
-                  </option>
-                ))}
-              </select>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search city/country (e.g. London)"
+                  value={formData.timezoneSearch || ""}
+                  onFocus={() => setFormData({ ...formData, showTzDropdown: true })}
+                  onChange={(e) => setFormData({ ...formData, timezoneSearch: e.target.value, showTzDropdown: true })}
+                  className="w-full bg-white/10 border border-white/20 p-3 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/30"
+                  required={!formData.timezone}
+                />
+
+                {formData.showTzDropdown && (
+                  <div className="absolute z-50 w-full mt-2 glass-card max-h-60 overflow-y-auto shadow-2xl border border-white/20">
+                    {timeZones
+                      .filter(tz => tz.toLowerCase().includes((formData.timezoneSearch || "").toLowerCase()))
+                      .slice(0, 50) // Performance: only show top 50 matches
+                      .map((tz) => (
+                        <button
+                          key={tz}
+                          type="button"
+                          onClick={() => setFormData({
+                            ...formData,
+                            timezone: tz,
+                            timezoneSearch: tz.replace(/_/g, " "),
+                            showTzDropdown: false
+                          })}
+                          className="w-full text-left px-4 py-3 text-white hover:bg-white/10 border-b border-white/5 last:border-0 text-sm transition-colors"
+                        >
+                          {getOffsetLabel(tz)}
+                        </button>
+                      ))}
+                    {timeZones.filter(tz => tz.toLowerCase().includes((formData.timezoneSearch || "").toLowerCase())).length === 0 && (
+                      <div className="p-4 text-white/50 text-sm italic">No matches found.</div>
+                    )}
+                  </div>
+                )}
+              </div>
+              {formData.timezone && !formData.showTzDropdown && (
+                <p className="text-[10px] text-emerald-400 absolute -bottom-5 left-1 font-medium">
+                  Selected: {formData.timezone}
+                </p>
+              )}
             </div>
           </div>
 

@@ -142,17 +142,47 @@ export default function EditAppointment() {
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-2 relative">
               <label className="text-sm font-medium text-white/70 ml-1">Timezone</label>
-              <input
-                type="text"
-                name="timezone"
-                placeholder="e.g. America/New_York"
-                value={formData.timezone}
-                onChange={handleChange}
-                className="w-full bg-white/10 border border-white/20 p-3 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/30"
-                required
-              />
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search city/country (e.g. London)"
+                  value={formData.timezoneSearch || formData.timezone || ""}
+                  onFocus={() => setFormData({ ...formData, showTzDropdown: true })}
+                  onChange={(e) => setFormData({ ...formData, timezoneSearch: e.target.value, showTzDropdown: true })}
+                  className="w-full bg-white/10 border border-white/20 p-3 rounded-lg text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-white/30"
+                  required
+                />
+
+                {formData.showTzDropdown && (
+                  <div className="absolute z-50 w-full mt-2 glass-card max-h-60 overflow-y-auto shadow-2xl border border-white/20">
+                    {Intl.supportedValuesOf("timeZone")
+                      .filter(tz => tz.toLowerCase().includes((formData.timezoneSearch || "").toLowerCase()))
+                      .slice(0, 50)
+                      .map((tz) => (
+                        <button
+                          key={tz}
+                          type="button"
+                          onClick={() => setFormData({
+                            ...formData,
+                            timezone: tz,
+                            timezoneSearch: tz.replace(/_/g, " "),
+                            showTzDropdown: false
+                          })}
+                          className="w-full text-left px-4 py-3 text-white hover:bg-white/10 border-b border-white/5 last:border-0 text-sm transition-colors"
+                        >
+                          {tz.replace(/_/g, " ")}
+                        </button>
+                      ))}
+                  </div>
+                )}
+              </div>
+              {formData.timezone && !formData.showTzDropdown && (
+                <p className="text-[10px] text-emerald-400 absolute -bottom-5 left-1 font-medium">
+                  Selected: {formData.timezone}
+                </p>
+              )}
             </div>
           </div>
 
